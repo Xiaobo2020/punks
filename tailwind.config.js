@@ -7,7 +7,7 @@ module.exports = {
   ],
   plugins: [require("daisyui")],
   daisyui: {
-    log: false,
+    logs: false,
   },
   theme: {
     extend: {},
