@@ -1,3 +1,6 @@
+import classNames from "classnames";
+import { useState } from "react";
+
 const SRC = {
   DISCORD: "https://discord.gg/RzvY6UyEes",
   TWITTER: "https://twitter.com/Bitcoin_Punks_",
@@ -6,7 +9,23 @@ const SRC = {
   ORDINALS: "",
 };
 
+const options = [
+  {
+    label: "Random",
+    value: 0,
+  },
+  {
+    label: "Punk ID",
+    value: 1,
+  },
+  {
+    label: "Recent Mint",
+    value: 3,
+  },
+];
+
 const Home = () => {
+  const [sortType, setSortType] = useState(0);
   return (
     <main className="box-border flex max-w-screen-xl flex-col">
       <div className="m-2 h-[140px] w-[140px] overflow-hidden rounded-[70px] bg-[#f7931a]">
@@ -119,6 +138,33 @@ const Home = () => {
         <button className="h-[34px] rounded bg-white/[.08] px-[14px] text-sm text-[#b5b5b5] hover:cursor-pointer hover:bg-transparent">
           View your punks
         </button>
+      </div>
+      <div>
+        {/* button list */}
+        <div>Sort by: </div>
+        <div>
+          {options.map(({ label, value }, index, array) => (
+            <button
+              key={value}
+              onClick={() => {
+                setSortType(value);
+              }}
+              className={classNames([
+                "inline-block h-[34px] border-[1px] border-white/[.25] px-[14px] text-center text-sm font-normal leading-[32px] text-white/[.82] hover:cursor-pointer hover:border-[#f7931a] hover:bg-[#f7931a]/[.2] hover:text-[#f7931a]",
+                {
+                  "ml-[-1px]": index > 0,
+                  "rounded-l-[3px]": index === 0,
+                  "rounded-r-[3px]": index === array.length - 1,
+                  "bg-[#f7931a]/[.2]": value === sortType,
+                  "border-[#f7931a]/[.9]": value === sortType,
+                  "text-[#f7931a]/[.9]": value === sortType,
+                },
+              ])}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
     </main>
   );
