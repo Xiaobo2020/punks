@@ -114,6 +114,12 @@ const Home = () => {
           !
         </div>
       </div>
+
+      <div>
+        <button className="h-[34px] rounded bg-white/[.08] px-[14px] text-sm text-[#b5b5b5] hover:cursor-pointer hover:bg-transparent">
+          View your punks
+        </button>
+      </div>
     </main>
   );
 };
