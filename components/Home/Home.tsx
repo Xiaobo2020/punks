@@ -1,6 +1,6 @@
 const Home = () => {
   return (
-    <main className="box-border flex max-w-screen-xl flex-col items-center p-10">
+    <main className="box-border flex max-w-screen-xl flex-col">
       <div className="m-2 h-[140px] w-[140px] rounded-[70px] bg-[#f7931a]">
         <img
           className="block h-full w-full "
@@ -8,40 +8,38 @@ const Home = () => {
           src="https://ord.ordinals.market/content/c43b26851e509d46a91223a01b6e22ec21a9d31432e02d571ebfa918f4048c0ci0"
         ></img>
       </div>
-      <div>
-        <h1 className="text-[44px] leading-[44px]">
-          Bitcoin Punks
-          <div className="ml-2 inline-block">
-            <a
-              className="inline-block h-full w-10 text-center leading-[44px]"
-              href="https://discord.gg/RzvY6UyEes"
-            >
-              <img
-                className="inline-block h-6 w-6"
-                alt="discord"
-                src="/discord-icon.svg"
-              ></img>
-            </a>
-            <a
-              className="inline-block h-full w-10 text-center leading-[44px]"
-              href="https://twitter.com/Bitcoin_Punks_"
-            >
-              <img
-                className="inline-block h-6 w-6"
-                alt="discord"
-                src="/twitter-icon.svg"
-              ></img>
-            </a>
-          </div>
-        </h1>
-        <h2 className="text-xl leading-10">
-          The first 10k NFT collection on Bitcoin
-        </h2>
-        <div>
-          <h3>10000/10000 minted!</h3>
-          <div>Verified listings</div>
+      <h1 className="text-[44px] leading-[44px]">
+        Bitcoin Punks
+        <div className="ml-2 inline-block">
+          <a
+            className="inline-block h-full w-10 text-center leading-[44px]"
+            href="https://discord.gg/RzvY6UyEes"
+          >
+            <img
+              className="inline-block h-6 w-6"
+              alt="discord"
+              src="/discord-icon.svg"
+            ></img>
+          </a>
+          <a
+            className="inline-block h-full w-10 text-center leading-[44px]"
+            href="https://twitter.com/Bitcoin_Punks_"
+          >
+            <img
+              className="inline-block h-6 w-6"
+              alt="discord"
+              src="/twitter-icon.svg"
+            ></img>
+          </a>
         </div>
-      </div>
+      </h1>
+      <h2 className="text-xl leading-10">
+        The first 10k NFT collection on Bitcoin
+      </h2>
+      <h3 className="text-[16px] font-bold text-[#f7931a]">
+        10000 / 10000 minted!
+      </h3>
+      <div>Verified listings</div>
       <div>
         Bitcoin Punks are the first byte-perfect uploads of the original
         Ethereum CryptoPunks onto the Bitcoin Blockchain using Ordinals. Active
