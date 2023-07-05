@@ -36,10 +36,10 @@ const Home = () => {
       <h2 className="text-xl leading-10">
         The first 10k NFT collection on Bitcoin
       </h2>
-      <h3 className="text-[16px] font-bold text-[#f7931a]">
+      <h3 className="text-[16px] font-medium text-[#f7931a]">
         10000 / 10000 minted!
       </h3>
-      <div>Verified listings</div>
+      <button className="btn">Verified listings</button>
       <div>
         Bitcoin Punks are the first byte-perfect uploads of the original
         Ethereum CryptoPunks onto the Bitcoin Blockchain using Ordinals. Active
