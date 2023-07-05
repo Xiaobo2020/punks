@@ -9,11 +9,11 @@ const SRC = {
 const Home = () => {
   return (
     <main className="box-border flex max-w-screen-xl flex-col">
-      <div className="m-2 h-[140px] w-[140px] rounded-[70px] bg-[#f7931a]">
+      <div className="m-2 h-[140px] w-[140px] overflow-hidden rounded-[70px] bg-[#f7931a]">
         <img
           className="block h-full w-full "
           alt="Bitcoin Punks Logo"
-          src="https://ord.ordinals.market/content/c43b26851e509d46a91223a01b6e22ec21a9d31432e02d571ebfa918f4048c0ci0"
+          src="/logo.png"
         ></img>
       </div>
       <h1 className="text-[44px] leading-[44px]">
@@ -48,7 +48,7 @@ const Home = () => {
         10000 / 10000 minted!
       </h3>
       <div>
-        <button className="btn-info btn-sm btn h-9 rounded font-normal">
+        <button className="h-[34px] rounded bg-[#70c0e8] px-[14px] text-sm text-black hover:cursor-pointer hover:bg-[#98cae9]">
           Verified listings
         </button>
       </div>
