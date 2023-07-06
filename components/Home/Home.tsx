@@ -151,9 +151,9 @@ const Home = () => {
           }}
         />
       </div>
-      <div>
+      <div className="flex w-[380px] flex-row flex-nowrap justify-between bg-white/[.2]">
         <div
-          className="mr-[12px] flex w-[140px] flex-row flex-nowrap items-center hover:cursor-pointer"
+          className="flex w-[140px] flex-row flex-nowrap items-center hover:cursor-pointer"
           onClick={() => {
             setAlwaysShowIds(!alwaysShowIds);
           }}
@@ -162,6 +162,13 @@ const Home = () => {
           <span className="ml-3 inline-block text-sm font-normal text-white/[.82]">
             Always show IDs
           </span>
+        </div>
+        <div className="flex h-[28px] w-[174px]">
+          <input
+            type="text"
+            className="h-full w-full rounded-[2px] bg-white/[.1] text-center text-sm font-normal outline-none focus:bg-[#f7931a]/[.3]"
+            placeholder="Find Punk ID"
+          />
         </div>
       </div>
     </main>
