@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import classNames from "classnames";
 import ButtonGroup from "../ButtonGroup";
 import Checkbox from "../Checkbox";
+import IdInput from "../IdInput";
 
 const SRC = {
   DISCORD: "https://discord.gg/RzvY6UyEes",
@@ -178,19 +179,14 @@ const Home = () => {
           </span>
         </div>
         <div className="flex h-[28px] w-[174px]">
-          <input
-            type="text"
-            className={classNames([
-              "h-full w-full rounded-[2px] bg-[#fffefd]/[.1] text-center text-sm font-normal text-white caret-[#f7931a] outline-none focus:bg-[#f7931a]/[.1]",
-              {
-                "line-through": !validPunkId,
-              },
-            ])}
-            placeholder="Find Punk ID"
+          <IdInput
             value={punkId}
             onChange={(e) => {
               setPunkId(e.target.value);
             }}
+            className={classNames({
+              "line-through": !validPunkId,
+            })}
           />
         </div>
       </div>
