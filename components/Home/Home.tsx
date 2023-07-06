@@ -1,5 +1,5 @@
-import classNames from "classnames";
 import { useState } from "react";
+import ButtonGroup from "../ButtonGroup/ButtonGroup";
 
 const SRC = {
   DISCORD: "https://discord.gg/RzvY6UyEes",
@@ -20,7 +20,7 @@ const options = [
   },
   {
     label: "Recent Mint",
-    value: 3,
+    value: 2,
   },
 ];
 
@@ -142,29 +142,13 @@ const Home = () => {
       <div>
         {/* button list */}
         <div>Sort by: </div>
-        <div>
-          {options.map(({ label, value }, index, array) => (
-            <button
-              key={value}
-              onClick={() => {
-                setSortType(value);
-              }}
-              className={classNames([
-                "inline-block h-[34px] border-[1px] border-white/[.25] px-[14px] text-center text-sm font-normal leading-[32px] text-white/[.82] hover:cursor-pointer hover:border-[#f7931a] hover:bg-[#f7931a]/[.2] hover:text-[#f7931a]",
-                {
-                  "ml-[-1px]": index > 0,
-                  "rounded-l-[3px]": index === 0,
-                  "rounded-r-[3px]": index === array.length - 1,
-                  "bg-[#f7931a]/[.2]": value === sortType,
-                  "border-[#f7931a]/[.9]": value === sortType,
-                  "text-[#f7931a]/[.9]": value === sortType,
-                },
-              ])}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <ButtonGroup
+          options={options}
+          value={sortType}
+          onChange={(v) => {
+            setSortType(v);
+          }}
+        />
       </div>
     </main>
   );
