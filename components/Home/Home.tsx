@@ -44,62 +44,67 @@ const Home = () => {
   }, [punkId]);
 
   return (
-    <main className="box-border flex max-w-screen-xl flex-col">
-      {/* LOGO */}
-      <div className="m-2 h-[140px] w-[140px] overflow-hidden rounded-[70px] bg-[#f7931a]">
-        <img
-          className="block h-full w-full "
-          alt="Bitcoin Punks Logo"
-          src="/logo.png"
-        ></img>
-      </div>
-
-      {/* Title */}
-      <h1 className="text-[44px] leading-[44px]">
-        Bitcoin Punks
-        <div className="ml-2 inline-block">
-          <a
-            className="inline-block h-full w-10 text-center leading-[44px]"
-            href={SRC.DISCORD}
-          >
-            <img
-              className="inline-block h-6 w-6"
-              alt="discord"
-              src="/discord-icon.svg"
-            ></img>
-          </a>
-          <a
-            className="inline-block h-full w-10 text-center leading-[44px]"
-            href={SRC.TWITTER}
-          >
-            <img
-              className="inline-block h-6 w-6"
-              alt="discord"
-              src="/twitter-icon.svg"
-            ></img>
-          </a>
+    <main className="box-border flex flex-1 flex-col items-center p-3 md:p-10">
+      <div className="mb-5 flex w-full max-w-[600px] flex-col items-center sm:flex-row">
+        {/* LOGO */}
+        <div className="mx-5 my-3 h-[140px] w-[140px] overflow-hidden rounded-[70px] bg-[#f7931a]">
+          <img
+            className="block h-full w-full "
+            alt="Bitcoin Punks Logo"
+            src="/logo.png"
+          ></img>
         </div>
-      </h1>
 
-      {/* Subtitle */}
-      <h2 className="text-xl leading-10">
-        The first 10k NFT collection on Bitcoin
-      </h2>
+        <div className="flex flex-col sm:ml-auto sm:mr-5">
+          {/* Title */}
+          <h1 className="text-[44px] leading-[44px]">
+            Bitcoin Punks
+            <div className="ml-2 inline-block">
+              <a
+                className="inline-block h-full w-10 text-center leading-[44px]"
+                href={SRC.DISCORD}
+              >
+                <img
+                  className="inline-block h-6 w-6"
+                  alt="discord"
+                  src="/discord-icon.svg"
+                ></img>
+              </a>
+              <a
+                className="inline-block h-full w-10 text-center leading-[44px]"
+                href={SRC.TWITTER}
+              >
+                <img
+                  className="inline-block h-6 w-6"
+                  alt="discord"
+                  src="/twitter-icon.svg"
+                ></img>
+              </a>
+            </div>
+          </h1>
 
-      {/* Supply */}
-      <h3 className="text-[16px] font-medium text-[#f7931a]">
-        10000 / 10000 minted!
-      </h3>
+          {/* Subtitle */}
+          <h2 className="text-xl leading-10">
+            The first 10k NFT collection on Bitcoin
+          </h2>
 
-      {/* Verify Button */}
-      <div>
-        <button className="h-[34px] rounded bg-[#70c0e8] px-[14px] text-sm text-black hover:cursor-pointer hover:bg-[#98cae9]">
-          Verified listings
-        </button>
+          <div className="my-2 flex flex-row items-center">
+            {/* Supply */}
+            <h3 className="mr-3 text-[16px] font-medium text-[#f7931a]">
+              10000 / 10000 minted!
+            </h3>
+            {/* Verify Button */}
+            <div>
+              <button className="h-[34px] rounded bg-[#70c0e8] px-[14px] text-sm text-black hover:cursor-pointer hover:bg-[#98cae9]">
+                Verified listings
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Description 1 */}
-      <p className="text-center text-sm">
+      <p className="max-w-[600px] text-center text-sm">
         Bitcoin Punks are the first byte-perfect uploads of the{" "}
         <a
           href={SRC.ETH_CRYPTO_PUNKS}
@@ -121,15 +126,17 @@ const Home = () => {
       <br />
 
       {/* Description 2 */}
-      <p className="text-center text-sm">
+      <p className="max-w-[600px] text-center text-sm">
         To make this site, we are checking the hash of every image uploaded to
         Ordinals and comparing it against the original 10k punk images. The
         links to Bitcoin Punks are the first-seen inscriptions (lowest ID) that
         contain these hashes on Ordinals.
       </p>
 
+      <div className="my-8 w-full max-w-[600px] border-b-[1px] border-solid border-[#555]"></div>
+
       {/* Info */}
-      <div className="relative box-border flex max-w-xl flex-row flex-nowrap rounded border-[1px] border-[#3889c5]/[.35] bg-[#3889c5]/25 py-3 pl-11 pr-3">
+      <div className="relative mb-8 box-border flex w-full max-w-[600px] flex-row flex-nowrap rounded border-[1px] border-[#3889c5]/[.35] bg-[#3889c5]/25 py-3 pl-11 pr-3">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 28 28"
@@ -168,52 +175,54 @@ const Home = () => {
       </div>
 
       {/* View Button */}
-      <div>
+      <div className="mb-6">
         <button className="h-[34px] rounded bg-white/[.08] px-[14px] text-sm text-[#b5b5b5] hover:cursor-pointer hover:bg-transparent">
           View your punks
         </button>
       </div>
 
-      {/* Sort */}
-      <div className="flex w-[355px] flex-row flex-nowrap items-center justify-between">
-        <div>Sort by: </div>
-        <ButtonGroup
-          options={options}
-          value={sortType}
-          onChange={(v) => {
-            setSortType(v);
-          }}
-        />
-      </div>
-
-      {/* Search */}
-      <div className="flex w-[355px] flex-row flex-nowrap justify-between">
-        <div
-          className="flex w-[140px] flex-row flex-nowrap items-center hover:cursor-pointer"
-          onClick={() => {
-            setAlwaysShowIds(!alwaysShowIds);
-          }}
-        >
-          <Checkbox value={alwaysShowIds} />
-          <span className="ml-3 inline-block text-sm font-normal text-white/[.82]">
-            Always show IDs
-          </span>
-        </div>
-        <div className="flex h-[28px] w-[160px]">
-          <IdInput
-            value={punkId}
-            onChange={(e) => {
-              setPunkId(e.target.value);
+      <div className="flex w-full max-w-[1000px] flex-row flex-wrap items-center justify-center justify-around">
+        {/* Sort */}
+        <div className="mt-5 flex w-[340px] flex-row flex-nowrap items-center justify-between lg:w-[355px]">
+          <div>Sort by: </div>
+          <ButtonGroup
+            options={options}
+            value={sortType}
+            onChange={(v) => {
+              setSortType(v);
             }}
-            className={classNames({
-              "line-through": !validPunkId,
-            })}
           />
         </div>
-        <div>
-          <button className="box-content h-7 w-7 rounded-[2px] bg-[#70c0e8]/[.16] px-2 text-[#70c0e8] hover:bg-[#70c0e8]/[.2]">
-            Go
-          </button>
+
+        {/* Search */}
+        <div className="mt-5 flex w-[375px] flex-row flex-nowrap justify-between lg:w-[355px]">
+          <div
+            className="flex w-[140px] flex-row flex-nowrap items-center hover:cursor-pointer"
+            onClick={() => {
+              setAlwaysShowIds(!alwaysShowIds);
+            }}
+          >
+            <Checkbox value={alwaysShowIds} />
+            <span className="ml-3 inline-block text-sm font-normal text-white/[.82]">
+              Always show IDs
+            </span>
+          </div>
+          <div className="flex h-[28px] w-[160px]">
+            <IdInput
+              value={punkId}
+              onChange={(e) => {
+                setPunkId(e.target.value);
+              }}
+              className={classNames({
+                "line-through": !validPunkId,
+              })}
+            />
+          </div>
+          <div>
+            <button className="box-content h-7 w-7 rounded-[2px] bg-[#70c0e8]/[.16] px-2 text-[#70c0e8] hover:bg-[#70c0e8]/[.2]">
+              Go
+            </button>
+          </div>
         </div>
       </div>
 

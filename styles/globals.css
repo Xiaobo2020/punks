@@ -9,11 +9,16 @@
   display: block;
 }
 
-body, #__next {
+body {
   width: 100%;
   height: 100%;
   display: flex;
   color: #b5b5b5;
+}
+
+#__next {
+  flex: 1;
+  display: flex;
 }
 
 @layer components {
