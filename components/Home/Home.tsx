@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import classNames from "classnames";
 import ButtonGroup from "../ButtonGroup";
 import Checkbox from "../Checkbox";
 
@@ -25,9 +26,22 @@ const options = [
   },
 ];
 
+const TOTAL = 10000;
+
 const Home = () => {
   const [sortType, setSortType] = useState(0);
   const [alwaysShowIds, setAlwaysShowIds] = useState(false);
+  const [punkId, setPunkId] = useState("");
+  const validPunkId = useMemo(() => {
+    // empty
+    if (punkId === "") return true;
+    // number
+    if (/^\d+$/.test(punkId) === false) return false;
+    // valid number
+    const n = parseInt(punkId);
+    return 0 <= n && n < TOTAL;
+  }, [punkId]);
+
   return (
     <main className="box-border flex max-w-screen-xl flex-col">
       <div className="m-2 h-[140px] w-[140px] overflow-hidden rounded-[70px] bg-[#f7931a]">
@@ -151,7 +165,7 @@ const Home = () => {
           }}
         />
       </div>
-      <div className="flex w-[380px] flex-row flex-nowrap justify-between bg-white/[.2]">
+      <div className="flex w-[380px] flex-row flex-nowrap justify-between">
         <div
           className="flex w-[140px] flex-row flex-nowrap items-center hover:cursor-pointer"
           onClick={() => {
@@ -166,8 +180,17 @@ const Home = () => {
         <div className="flex h-[28px] w-[174px]">
           <input
             type="text"
-            className="h-full w-full rounded-[2px] bg-white/[.1] text-center text-sm font-normal outline-none focus:bg-[#f7931a]/[.3]"
+            className={classNames([
+              "h-full w-full rounded-[2px] bg-[#fffefd]/[.1] text-center text-sm font-normal text-white caret-[#f7931a] outline-none focus:bg-[#f7931a]/[.1]",
+              {
+                "line-through": !validPunkId,
+              },
+            ])}
             placeholder="Find Punk ID"
+            value={punkId}
+            onChange={(e) => {
+              setPunkId(e.target.value);
+            }}
           />
         </div>
       </div>
