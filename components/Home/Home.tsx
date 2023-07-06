@@ -156,7 +156,7 @@ const Home = () => {
           View your punks
         </button>
       </div>
-      <div className="flex w-[340px] flex-row flex-nowrap items-center justify-between">
+      <div className="flex w-[375px] flex-row flex-nowrap items-center justify-between">
         <div>Sort by: </div>
         <ButtonGroup
           options={options}
@@ -166,7 +166,7 @@ const Home = () => {
           }}
         />
       </div>
-      <div className="flex w-[380px] flex-row flex-nowrap justify-between">
+      <div className="flex w-[375px] flex-row flex-nowrap justify-between">
         <div
           className="flex w-[140px] flex-row flex-nowrap items-center hover:cursor-pointer"
           onClick={() => {
@@ -188,6 +188,11 @@ const Home = () => {
               "line-through": !validPunkId,
             })}
           />
+        </div>
+        <div>
+          <button className="box-content h-7 w-7 rounded-[2px] bg-[#70c0e8]/[.16] px-2 text-[#70c0e8] hover:bg-[#70c0e8]/[.2]">
+            Go
+          </button>
         </div>
       </div>
     </main>
