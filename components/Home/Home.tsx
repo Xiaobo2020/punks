@@ -45,6 +45,7 @@ const Home = () => {
 
   return (
     <main className="box-border flex max-w-screen-xl flex-col">
+      {/* LOGO */}
       <div className="m-2 h-[140px] w-[140px] overflow-hidden rounded-[70px] bg-[#f7931a]">
         <img
           className="block h-full w-full "
@@ -52,6 +53,8 @@ const Home = () => {
           src="/logo.png"
         ></img>
       </div>
+
+      {/* Title */}
       <h1 className="text-[44px] leading-[44px]">
         Bitcoin Punks
         <div className="ml-2 inline-block">
@@ -77,17 +80,25 @@ const Home = () => {
           </a>
         </div>
       </h1>
+
+      {/* Subtitle */}
       <h2 className="text-xl leading-10">
         The first 10k NFT collection on Bitcoin
       </h2>
+
+      {/* Supply */}
       <h3 className="text-[16px] font-medium text-[#f7931a]">
         10000 / 10000 minted!
       </h3>
+
+      {/* Verify Button */}
       <div>
         <button className="h-[34px] rounded bg-[#70c0e8] px-[14px] text-sm text-black hover:cursor-pointer hover:bg-[#98cae9]">
           Verified listings
         </button>
       </div>
+
+      {/* Description 1 */}
       <p className="text-center text-sm">
         Bitcoin Punks are the first byte-perfect uploads of the{" "}
         <a
@@ -106,13 +117,18 @@ const Home = () => {
         . Active Bitcoin Punk holders operate the website, Twitter and Discord
         to proliferate the story of Bitcoin Punks.
       </p>
+
       <br />
+
+      {/* Description 2 */}
       <p className="text-center text-sm">
         To make this site, we are checking the hash of every image uploaded to
         Ordinals and comparing it against the original 10k punk images. The
         links to Bitcoin Punks are the first-seen inscriptions (lowest ID) that
         contain these hashes on Ordinals.
       </p>
+
+      {/* Info */}
       <div className="relative box-border flex max-w-xl flex-row flex-nowrap rounded border-[1px] border-[#3889c5]/[.35] bg-[#3889c5]/25 py-3 pl-11 pr-3">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -151,12 +167,15 @@ const Home = () => {
         </div>
       </div>
 
+      {/* View Button */}
       <div>
         <button className="h-[34px] rounded bg-white/[.08] px-[14px] text-sm text-[#b5b5b5] hover:cursor-pointer hover:bg-transparent">
           View your punks
         </button>
       </div>
-      <div className="flex w-[375px] flex-row flex-nowrap items-center justify-between">
+
+      {/* Sort */}
+      <div className="flex w-[355px] flex-row flex-nowrap items-center justify-between">
         <div>Sort by: </div>
         <ButtonGroup
           options={options}
@@ -166,7 +185,9 @@ const Home = () => {
           }}
         />
       </div>
-      <div className="flex w-[375px] flex-row flex-nowrap justify-between">
+
+      {/* Search */}
+      <div className="flex w-[355px] flex-row flex-nowrap justify-between">
         <div
           className="flex w-[140px] flex-row flex-nowrap items-center hover:cursor-pointer"
           onClick={() => {
@@ -178,7 +199,7 @@ const Home = () => {
             Always show IDs
           </span>
         </div>
-        <div className="flex h-[28px] w-[174px]">
+        <div className="flex h-[28px] w-[160px]">
           <IdInput
             value={punkId}
             onChange={(e) => {
@@ -195,6 +216,9 @@ const Home = () => {
           </button>
         </div>
       </div>
+
+      {/* List */}
+      {/* Load More */}
     </main>
   );
 };
