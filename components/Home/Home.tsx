@@ -369,10 +369,18 @@ const Home = () => {
                       },
                     ])}
                   >{`#${convertToString(id)}`}</div>
-                  {/* <div> */}
-                  {/*   <div></div> */}
-                  {/*   <div></div> */}
-                  {/* </div> */}
+                  <div className="invisible absolute bottom-0 left-0 flex h-4 w-24 flex-row flex-nowrap bg-black/[.5] group-hover:!visible">
+                    <button className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline">
+                      ORDS
+                    </button>
+                    <a
+                      className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline"
+                      href={getPunkImage(id)}
+                      target="_blank"
+                    >
+                      FPF
+                    </a>
+                  </div>
                 </div>
               );
             })}
