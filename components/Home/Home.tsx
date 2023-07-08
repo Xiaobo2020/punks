@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import ButtonGroup from "../ButtonGroup";
 import Checkbox from "../Checkbox";
@@ -12,7 +12,7 @@ const SRC = {
   ORDINALS: "",
 };
 
-const options = [
+const OPTIONS = [
   {
     label: "Random",
     value: 0,
@@ -33,6 +33,7 @@ const Home = () => {
   const [sortType, setSortType] = useState(0);
   const [alwaysShowIds, setAlwaysShowIds] = useState(false);
   const [punkId, setPunkId] = useState("");
+  const [minted, setMinted] = useState<undefined | number>(undefined);
   const validPunkId = useMemo(() => {
     // empty
     if (punkId === "") return true;
@@ -42,6 +43,16 @@ const Home = () => {
     const n = parseInt(punkId);
     return 0 <= n && n < TOTAL;
   }, [punkId]);
+
+  // FIXME:
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setMinted(TOTAL);
+    }, 3000);
+    return () => {
+      clearTimeout(timerId);
+    };
+  });
 
   return (
     <main className="box-border flex flex-1 flex-col items-center p-3 md:p-10">
@@ -90,8 +101,16 @@ const Home = () => {
 
           <div className="my-2 flex flex-row items-center">
             {/* Supply */}
-            <h3 className="mr-3 text-[16px] font-medium text-[#f7931a]">
-              10000 / 10000 minted!
+            <h3
+              className={classNames([
+                "mr-3 text-[16px] font-medium",
+                {
+                  "text-[#f7931a]": minted === TOTAL,
+                },
+              ])}
+            >
+              {minted === undefined ? "..." : minted}
+              {` / ${TOTAL} minted!`}
             </h3>
             {/* Verify Button */}
             <div>
@@ -186,7 +205,7 @@ const Home = () => {
         <div className="mt-5 flex w-[340px] flex-row flex-nowrap items-center justify-between lg:w-[355px]">
           <div>Sort by: </div>
           <ButtonGroup
-            options={options}
+            options={OPTIONS}
             value={sortType}
             onChange={(v) => {
               setSortType(v);
