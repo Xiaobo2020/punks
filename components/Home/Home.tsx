@@ -56,6 +56,16 @@ type PunkInfo = {
 const TOTAL = 10000;
 const PER_PAGE = 20;
 
+const isValidPunkId = (punkId: string) => {
+  // empty
+  if (punkId === "") return true;
+  // number
+  if (/^\d+$/.test(punkId) === false) return false;
+  // valid number
+  const n = parseInt(punkId);
+  return 0 <= n && n < TOTAL;
+};
+
 const Home = () => {
   const [sortType, setSortType] = useState(SORT_TYPE.RANDOM);
   const [alwaysShowIds, setAlwaysShowIds] = useState(false);
@@ -88,16 +98,6 @@ const Home = () => {
     if (punkList.length === 0) return false;
     return count < punkList.length;
   }, [punkList, count]);
-
-  const validPunkId = useMemo(() => {
-    // empty
-    if (draftPunkId === "") return true;
-    // number
-    if (/^\d+$/.test(draftPunkId) === false) return false;
-    // valid number
-    const n = parseInt(draftPunkId);
-    return 0 <= n && n < TOTAL;
-  }, [draftPunkId]);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -345,7 +345,7 @@ const Home = () => {
                 setDraftPunkId(e.target.value);
               }}
               className={classNames({
-                "line-through": !validPunkId,
+                "line-through": !isValidPunkId(draftPunkId),
               })}
             />
           </div>
@@ -353,7 +353,9 @@ const Home = () => {
             <button
               onClick={() => {
                 if (draftPunkId !== "") {
-                  setPunkId(draftPunkId);
+                  setPunkId(
+                    isValidPunkId(draftPunkId) ? draftPunkId : TOTAL - 1 + ""
+                  );
                   setDraftPunkId("");
                 }
               }}
