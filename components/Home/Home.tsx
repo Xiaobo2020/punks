@@ -3,6 +3,7 @@ import classNames from "classnames";
 import ButtonGroup from "../ButtonGroup";
 import Checkbox from "../Checkbox";
 import IdInput from "../IdInput";
+import imageLazyLoading from "@/utils";
 
 const SRC = {
   DISCORD: "https://discord.gg/RzvY6UyEes",
@@ -57,7 +58,7 @@ const Home = () => {
   const [minted, setMinted] = useState<undefined | number>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [punkList, setPunkList] = useState<Array<PunkInfo>>([]);
-  const [showPunks, setShowPunks] = useState(PER_PAGE);
+  const [showPunks, setShowPunks] = useState(0);
 
   const hasMore = useMemo(() => {
     if (punkList.length === 0) return false;
@@ -101,6 +102,7 @@ const Home = () => {
         if (isSubscribed) {
           setMinted(result.minted);
           setPunkList(result.punkList);
+          setShowPunks(PER_PAGE);
           setIsLoading(false);
         }
       } catch (e) {
@@ -120,6 +122,12 @@ const Home = () => {
       isSubscribed = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (showPunks) {
+      imageLazyLoading();
+    }
+  }, [showPunks]);
 
   return (
     <main className="box-border flex flex-1 flex-col items-center p-3 md:p-10">
@@ -313,14 +321,17 @@ const Home = () => {
       </div>
 
       {/* List */}
-      <div className="grid w-full grid-cols-punk justify-center bg-white">
+      <div className="grid w-full max-w-7xl grid-cols-punk justify-center">
         {punkList
           .filter(({ id }) => id < showPunks - 1)
           .map(({ id }) => {
             return (
-              <div className="relative h-24 w-24" key={convertToString(id)}>
-                {/* TODO: Lazy Load */}
-                <img src={getPunkImage(id)} alt={`punk ${id}`} />
+              <div
+                className="lazy-image-container relative h-24 w-24 bg-[#F7931A]"
+                data-src={getPunkImage(id)}
+                key={convertToString(id)}
+              >
+                {/* Lazy Load Image */}
               </div>
             );
           })}
