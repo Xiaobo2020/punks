@@ -10,7 +10,11 @@ module.exports = {
     logs: false,
   },
   theme: {
-    extend: {},
+    extend: {
+      gridTemplateColumns: {
+        punk: "repeat(auto-fill, 96px)",
+      },
+    },
     screens: {
       // ----- default screens -----
       sm: "640px",

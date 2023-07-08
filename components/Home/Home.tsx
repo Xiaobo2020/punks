@@ -27,14 +27,43 @@ const OPTIONS = [
   },
 ];
 
+const convertToString = (punkId: number) => {
+  const str = "" + punkId;
+  const PAD = "0000";
+  const ans = PAD.substring(0, PAD.length - str.length) + str;
+  return ans;
+};
+
+const getPunkImage = (punkId: number) => {
+  return `https://cryptopunks.app/cryptopunks/cryptopunk${convertToString(
+    punkId
+  )}.png?size=2500&customColor=F7931A`;
+};
+
+// FIXME:
+type OrdInfo = string;
+type PunkInfo = {
+  id: number;
+  ords: Array<OrdInfo>;
+};
+
 const TOTAL = 10000;
+const PER_PAGE = 20;
 
 const Home = () => {
   const [sortType, setSortType] = useState(0);
   const [alwaysShowIds, setAlwaysShowIds] = useState(false);
   const [punkId, setPunkId] = useState("");
   const [minted, setMinted] = useState<undefined | number>(undefined);
-  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [punkList, setPunkList] = useState<Array<PunkInfo>>([]);
+  const [showPunks, setShowPunks] = useState(PER_PAGE);
+
+  const hasMore = useMemo(() => {
+    if (punkList.length === 0) return false;
+    return showPunks < punkList.length;
+  }, [punkList, showPunks]);
+
   const validPunkId = useMemo(() => {
     // empty
     if (punkId === "") return true;
@@ -45,25 +74,53 @@ const Home = () => {
     return 0 <= n && n < TOTAL;
   }, [punkId]);
 
-  // FIXME:
   useEffect(() => {
-    const timerId = setTimeout(() => {
-      setMinted(TOTAL);
-    }, 3000);
-    return () => {
-      clearTimeout(timerId);
-    };
-  });
+    let isSubscribed = true;
 
-  // FIXME:
-  useEffect(() => {
-    const timerId = setTimeout(() => {
-      setHasMore(false);
-    }, 5000);
-    return () => {
-      clearTimeout(timerId);
+    const initData = async () => {
+      setIsLoading(true);
+      try {
+        const result = await new Promise<{
+          punkList: Array<PunkInfo>;
+          minted: number;
+        }>((resolve) => {
+          // FIXME:
+          setTimeout(() => {
+            resolve({
+              punkList: new Array(TOTAL).fill(null).map((v, idx) => {
+                return {
+                  id: idx,
+                  ords: [] as Array<OrdInfo>,
+                };
+              }),
+              minted: 200,
+            });
+          }, 3000);
+        });
+
+        if (isSubscribed) {
+          setMinted(result.minted);
+          setPunkList(result.punkList);
+          setIsLoading(false);
+        }
+      } catch (e) {
+        console.log(
+          "Error",
+          e instanceof Error ? JSON.stringify(e.message) : JSON.stringify(e)
+        );
+        if (isSubscribed) {
+          setIsLoading(false);
+        }
+      }
     };
-  });
+
+    initData();
+
+    return () => {
+      isSubscribed = false;
+    };
+  }, []);
+
   return (
     <main className="box-border flex flex-1 flex-col items-center p-3 md:p-10">
       <div className="mb-5 flex w-full max-w-[600px] flex-col items-center sm:flex-row">
@@ -256,7 +313,18 @@ const Home = () => {
       </div>
 
       {/* List */}
-      <div className="h-3 w-full bg-red-50"></div>
+      <div className="grid w-full grid-cols-punk justify-center bg-white">
+        {punkList
+          .filter(({ id }) => id < showPunks - 1)
+          .map(({ id }) => {
+            return (
+              <div className="relative h-24 w-24" key={convertToString(id)}>
+                {/* TODO: Lazy Load */}
+                <img src={getPunkImage(id)} alt={`punk ${id}`} />
+              </div>
+            );
+          })}
+      </div>
 
       {/* Load More Button */}
       <div
@@ -267,7 +335,15 @@ const Home = () => {
           },
         ])}
       >
-        <button className="h-[34px] rounded bg-white/[.08] px-[14px] text-sm text-[#f7931a] hover:cursor-pointer hover:bg-white/[.18]">
+        <button
+          onClick={() => {
+            const nextShowPunks = showPunks + PER_PAGE;
+            setShowPunks(
+              nextShowPunks > punkList.length ? punkList.length : nextShowPunks
+            );
+          }}
+          className="h-[34px] rounded bg-white/[.08] px-[14px] text-sm text-[#f7931a] hover:cursor-pointer hover:bg-white/[.18]"
+        >
           Load more
         </button>
       </div>
