@@ -54,7 +54,9 @@ const PER_PAGE = 20;
 const Home = () => {
   const [sortType, setSortType] = useState(0);
   const [alwaysShowIds, setAlwaysShowIds] = useState(false);
+  const [draftPunkId, setDraftPunkId] = useState("");
   const [punkId, setPunkId] = useState("");
+
   const [minted, setMinted] = useState<undefined | number>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [punkList, setPunkList] = useState<Array<PunkInfo>>([]);
@@ -67,13 +69,13 @@ const Home = () => {
 
   const validPunkId = useMemo(() => {
     // empty
-    if (punkId === "") return true;
+    if (draftPunkId === "") return true;
     // number
-    if (/^\d+$/.test(punkId) === false) return false;
+    if (/^\d+$/.test(draftPunkId) === false) return false;
     // valid number
-    const n = parseInt(punkId);
+    const n = parseInt(draftPunkId);
     return 0 <= n && n < TOTAL;
-  }, [punkId]);
+  }, [draftPunkId]);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -128,6 +130,12 @@ const Home = () => {
       imageLazyLoading();
     }
   }, [showPunks]);
+
+  useEffect(() => {
+    if (punkId !== "") {
+      imageLazyLoading();
+    }
+  }, [punkId]);
 
   return (
     <main className="box-border flex flex-1 flex-col items-center p-3 md:p-10">
@@ -317,9 +325,9 @@ const Home = () => {
           </div>
           <div className="flex h-[28px] w-[160px]">
             <IdInput
-              value={punkId}
+              value={draftPunkId}
               onChange={(e) => {
-                setPunkId(e.target.value);
+                setDraftPunkId(e.target.value);
               }}
               className={classNames({
                 "line-through": !validPunkId,
@@ -327,7 +335,15 @@ const Home = () => {
             />
           </div>
           <div>
-            <button className="box-content h-7 w-7 rounded-sm bg-[#70c0e8]/[.16] px-2 text-[#70c0e8] hover:bg-[#70c0e8]/[.2]">
+            <button
+              onClick={() => {
+                if (draftPunkId !== "") {
+                  setPunkId(draftPunkId);
+                  setDraftPunkId("");
+                }
+              }}
+              className="box-content h-7 w-7 rounded-sm bg-[#70c0e8]/[.16] px-2 text-[#70c0e8] hover:bg-[#70c0e8]/[.2]"
+            >
               Go
             </button>
           </div>
@@ -349,10 +365,14 @@ const Home = () => {
       </div>
 
       {/* List */}
-      <div className="w-full max-w-7xl">
+      <div className="mt-6 w-full max-w-7xl">
         <div className="grid w-full grid-cols-punk justify-center">
           {punkList
-            .filter(({ id }) => id < showPunks - 1)
+            .filter(({ id }) => {
+              if (punkId !== "") return id === parseInt(punkId);
+
+              return id < showPunks - 1;
+            })
             .map(({ id }) => {
               return (
                 <div
@@ -392,7 +412,7 @@ const Home = () => {
         className={classNames([
           "mt-6",
           {
-            hidden: !hasMore,
+            hidden: !hasMore || punkId !== "",
           },
         ])}
       >
@@ -408,6 +428,10 @@ const Home = () => {
           Load more
         </button>
       </div>
+
+      {/* Filtered PunkId */}
+
+      {/* Clear Filter */}
     </main>
   );
 };
