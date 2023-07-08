@@ -230,7 +230,14 @@ const Home = () => {
       <div className="my-8 w-full max-w-[600px] border-b-[1px] border-solid border-[#555]"></div>
 
       {/* Info */}
-      <div className="relative mb-8 box-border flex w-full max-w-[600px] flex-row flex-nowrap rounded border-[1px] border-[#3889c5]/[.35] bg-[#3889c5]/25 py-3 pl-11 pr-3">
+      <div
+        className={classNames([
+          "relative mb-8 box-border flex w-full max-w-[600px] flex-row flex-nowrap rounded border-[1px] border-[#3889c5]/[.35] bg-[#3889c5]/25 py-3 pl-11 pr-3",
+          {
+            hidden: isLoading,
+          },
+        ])}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 28 28"
@@ -269,7 +276,14 @@ const Home = () => {
       </div>
 
       {/* View Button */}
-      <div className="mb-6">
+      <div
+        className={classNames([
+          "mb-6",
+          {
+            hidden: isLoading,
+          },
+        ])}
+      >
         <button className="h-[34px] rounded bg-white/[.08] px-[14px] text-sm text-[#b5b5b5] hover:cursor-pointer hover:bg-transparent">
           View your punks
         </button>
@@ -313,28 +327,56 @@ const Home = () => {
             />
           </div>
           <div>
-            <button className="box-content h-7 w-7 rounded-[2px] bg-[#70c0e8]/[.16] px-2 text-[#70c0e8] hover:bg-[#70c0e8]/[.2]">
+            <button className="box-content h-7 w-7 rounded-sm bg-[#70c0e8]/[.16] px-2 text-[#70c0e8] hover:bg-[#70c0e8]/[.2]">
               Go
             </button>
           </div>
         </div>
       </div>
 
+      {/* Loading Data */}
+      <div
+        className={classNames([
+          "mt-6",
+          {
+            hidden: !isLoading,
+          },
+        ])}
+      >
+        <div className="box-content h-8 rounded-sm border-[1px] border-white/[.25] px-3 text-sm leading-8 text-white/[.25]">
+          Loading data ...
+        </div>
+      </div>
+
       {/* List */}
-      <div className="grid w-full max-w-7xl grid-cols-punk justify-center">
-        {punkList
-          .filter(({ id }) => id < showPunks - 1)
-          .map(({ id }) => {
-            return (
-              <div
-                className="lazy-image-container relative h-24 w-24 bg-[#F7931A]"
-                data-src={getPunkImage(id)}
-                key={convertToString(id)}
-              >
-                {/* Lazy Load Image */}
-              </div>
-            );
-          })}
+      <div className="w-full max-w-7xl">
+        <div className="grid w-full grid-cols-punk justify-center">
+          {punkList
+            .filter(({ id }) => id < showPunks - 1)
+            .map(({ id }) => {
+              return (
+                <div
+                  className="lazy-image-container group relative h-24 w-24 bg-[#F7931A]"
+                  data-src={getPunkImage(id)}
+                  key={convertToString(id)}
+                >
+                  {/* Lazy Load Image */}
+                  <div
+                    className={classNames([
+                      "invisible absolute left-0 top-0 h-4 w-24 bg-black/[.5] text-center text-xs font-normal text-white group-hover:!visible",
+                      {
+                        "!visible": alwaysShowIds,
+                      },
+                    ])}
+                  >{`#${convertToString(id)}`}</div>
+                  {/* <div> */}
+                  {/*   <div></div> */}
+                  {/*   <div></div> */}
+                  {/* </div> */}
+                </div>
+              );
+            })}
+        </div>
       </div>
 
       {/* Load More Button */}

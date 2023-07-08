@@ -9,7 +9,7 @@ function Checkbox({ value }: Props) {
   return (
     <span
       className={classNames([
-        "box-content inline-block h-[14px] w-[14px] rounded-[2px] border-[1px] border-white/[.25]",
+        "box-content inline-block h-[14px] w-[14px] rounded-sm border-[1px] border-white/[.25]",
         {
           "!border-[#f7931a]": value,
           "bg-[#f7931a]": value,

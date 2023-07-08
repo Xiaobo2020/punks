@@ -11,7 +11,7 @@ const IdInput = ({ value, onChange, className }: Props) => {
     <input
       type="text"
       className={classNames([
-        "h-full w-full rounded-[2px] bg-[#fffefd]/[.1] text-center text-sm font-normal text-white caret-[#f7931a] outline-none focus:bg-[#f7931a]/[.1]",
+        "h-full w-full rounded-sm bg-[#fffefd]/[.1] text-center text-sm font-normal text-white caret-[#f7931a] outline-none focus:bg-[#f7931a]/[.1]",
         className,
       ])}
       placeholder="Find Punk ID"
