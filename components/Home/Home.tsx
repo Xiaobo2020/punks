@@ -13,18 +13,23 @@ const SRC = {
   ORDINALS: "",
 };
 
+const SORT_TYPE = {
+  RANDOM: 0,
+  PUNK_ID: 1,
+  RECENT_MINT: 2,
+};
 const OPTIONS = [
   {
     label: "Random",
-    value: 0,
+    value: SORT_TYPE.RANDOM,
   },
   {
     label: "Punk ID",
-    value: 1,
+    value: SORT_TYPE.PUNK_ID,
   },
   {
     label: "Recent Mint",
-    value: 2,
+    value: SORT_TYPE.RECENT_MINT,
   },
 ];
 
@@ -52,7 +57,7 @@ const TOTAL = 10000;
 const PER_PAGE = 20;
 
 const Home = () => {
-  const [sortType, setSortType] = useState(0);
+  const [sortType, setSortType] = useState(SORT_TYPE.RANDOM);
   const [alwaysShowIds, setAlwaysShowIds] = useState(false);
   const [draftPunkId, setDraftPunkId] = useState("");
   const [punkId, setPunkId] = useState("");
@@ -60,12 +65,29 @@ const Home = () => {
   const [minted, setMinted] = useState<undefined | number>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [punkList, setPunkList] = useState<Array<PunkInfo>>([]);
-  const [showPunks, setShowPunks] = useState(0);
+  const [count, setCount] = useState(0);
+
+  const punkListToBeShown = useMemo(() => {
+    if (punkId !== "") {
+      return punkList.filter((punk) => punk.id === parseInt(punkId));
+    }
+
+    if (sortType === SORT_TYPE.RANDOM) {
+      return [...punkList]
+        .sort(() => (Math.random() > 0.5 ? 1 : -1))
+        .filter((punk, idx) => idx < count - 1);
+    } else if (sortType === SORT_TYPE.PUNK_ID) {
+      return punkList.filter((punk) => punk.id < count - 1);
+    } else {
+      // FIXME: Recent Minted
+      return punkList.filter((punk) => punk.id < count - 1);
+    }
+  }, [punkId, punkList, count, sortType]);
 
   const hasMore = useMemo(() => {
     if (punkList.length === 0) return false;
-    return showPunks < punkList.length;
-  }, [punkList, showPunks]);
+    return count < punkList.length;
+  }, [punkList, count]);
 
   const validPunkId = useMemo(() => {
     // empty
@@ -104,7 +126,7 @@ const Home = () => {
         if (isSubscribed) {
           setMinted(result.minted);
           setPunkList(result.punkList);
-          setShowPunks(PER_PAGE);
+          setCount(PER_PAGE);
           setIsLoading(false);
         }
       } catch (e) {
@@ -126,16 +148,9 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (showPunks) {
-      imageLazyLoading();
-    }
-  }, [showPunks]);
-
-  useEffect(() => {
-    if (punkId !== "") {
-      imageLazyLoading();
-    }
-  }, [punkId]);
+    console.log(punkListToBeShown);
+    imageLazyLoading();
+  }, [punkListToBeShown]);
 
   return (
     <main className="box-border flex flex-1 flex-col items-center p-3 md:p-10">
@@ -366,44 +381,38 @@ const Home = () => {
 
       {/* List */}
       <div className="mt-6 w-full max-w-7xl">
-        <div className="grid w-full grid-cols-punk justify-center">
-          {punkList
-            .filter(({ id }) => {
-              if (punkId !== "") return id === parseInt(punkId);
-
-              return id < showPunks - 1;
-            })
-            .map(({ id }) => {
-              return (
+        <div className="flex w-full flex-row flex-wrap items-center justify-center">
+          {punkListToBeShown.map(({ id }) => {
+            return (
+              <div
+                className="lazy-image-container group relative h-24 w-24 bg-[#F7931A]"
+                data-src={getPunkImage(id)}
+                key={convertToString(id)}
+              >
+                {/* Lazy Load Image */}
                 <div
-                  className="lazy-image-container group relative h-24 w-24 bg-[#F7931A]"
-                  data-src={getPunkImage(id)}
-                  key={convertToString(id)}
-                >
-                  {/* Lazy Load Image */}
-                  <div
-                    className={classNames([
-                      "invisible absolute left-0 top-0 h-4 w-24 bg-black/[.5] text-center text-xs font-normal text-white group-hover:!visible",
-                      {
-                        "!visible": alwaysShowIds,
-                      },
-                    ])}
-                  >{`#${convertToString(id)}`}</div>
-                  <div className="invisible absolute bottom-0 left-0 flex h-4 w-24 flex-row flex-nowrap bg-black/[.5] group-hover:!visible">
-                    <button className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline">
-                      ORDS
-                    </button>
-                    <a
-                      className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline"
-                      href={getPunkImage(id)}
-                      target="_blank"
-                    >
-                      FPF
-                    </a>
-                  </div>
+                  className={classNames([
+                    "invisible absolute left-0 top-0 h-4 w-24 bg-black/[.5] text-center text-xs font-normal text-white group-hover:!visible",
+                    {
+                      "!visible": alwaysShowIds,
+                    },
+                  ])}
+                >{`#${convertToString(id)}`}</div>
+                <div className="invisible absolute bottom-0 left-0 flex h-4 w-24 flex-row flex-nowrap bg-black/[.5] group-hover:!visible">
+                  <button className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline">
+                    ORDS
+                  </button>
+                  <a
+                    className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline"
+                    href={getPunkImage(id)}
+                    target="_blank"
+                  >
+                    FPF
+                  </a>
                 </div>
-              );
-            })}
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -418,8 +427,8 @@ const Home = () => {
       >
         <button
           onClick={() => {
-            const nextShowPunks = showPunks + PER_PAGE;
-            setShowPunks(
+            const nextShowPunks = count + PER_PAGE;
+            setCount(
               nextShowPunks > punkList.length ? punkList.length : nextShowPunks
             );
           }}
@@ -429,9 +438,24 @@ const Home = () => {
         </button>
       </div>
 
-      {/* Filtered PunkId */}
-
       {/* Clear Filter */}
+      <div
+        className={classNames([
+          "mt-6",
+          {
+            hidden: punkId === "",
+          },
+        ])}
+      >
+        <button
+          onClick={() => {
+            setPunkId("");
+          }}
+          className="h-7 rounded bg-[#f7931a] px-2 text-sm text-black hover:cursor-pointer hover:bg-[#f7931a]/[.9]"
+        >
+          Clear Filter
+        </button>
+      </div>
     </main>
   );
 };
