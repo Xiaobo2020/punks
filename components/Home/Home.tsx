@@ -34,6 +34,7 @@ const Home = () => {
   const [alwaysShowIds, setAlwaysShowIds] = useState(false);
   const [punkId, setPunkId] = useState("");
   const [minted, setMinted] = useState<undefined | number>(undefined);
+  const [hasMore, setHasMore] = useState(true);
   const validPunkId = useMemo(() => {
     // empty
     if (punkId === "") return true;
@@ -54,6 +55,15 @@ const Home = () => {
     };
   });
 
+  // FIXME:
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setHasMore(false);
+    }, 5000);
+    return () => {
+      clearTimeout(timerId);
+    };
+  });
   return (
     <main className="box-border flex flex-1 flex-col items-center p-3 md:p-10">
       <div className="mb-5 flex w-full max-w-[600px] flex-col items-center sm:flex-row">
@@ -200,7 +210,7 @@ const Home = () => {
         </button>
       </div>
 
-      <div className="flex w-full max-w-[1000px] flex-row flex-wrap items-center justify-center justify-around">
+      <div className="mb-5 flex w-full max-w-[1000px] flex-row flex-wrap items-center justify-center justify-around">
         {/* Sort */}
         <div className="mt-5 flex w-[340px] flex-row flex-nowrap items-center justify-between lg:w-[355px]">
           <div>Sort by: </div>
@@ -246,7 +256,21 @@ const Home = () => {
       </div>
 
       {/* List */}
-      {/* Load More */}
+      <div className="h-3 w-full bg-red-50"></div>
+
+      {/* Load More Button */}
+      <div
+        className={classNames([
+          "mt-6",
+          {
+            hidden: !hasMore,
+          },
+        ])}
+      >
+        <button className="h-[34px] rounded bg-white/[.08] px-[14px] text-sm text-[#f7931a] hover:cursor-pointer hover:bg-white/[.18]">
+          Load more
+        </button>
+      </div>
     </main>
   );
 };
