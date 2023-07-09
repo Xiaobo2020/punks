@@ -29,4 +29,5 @@ export const SORT_OPTIONS = [
 
 export const TOTAL_SUPPLY = 10000;
 
+// TODO: Actual per_page
 export const PER_PAGE = 20;

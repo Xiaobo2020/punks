@@ -1,4 +1,5 @@
 import promiseLimit from "promise-limit";
+
 const limit = promiseLimit(3);
 
 const lazyLoad = (image: HTMLImageElement, src: string) => {

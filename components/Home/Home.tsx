@@ -3,13 +3,14 @@ import { useEffect, useMemo, useState } from "react";
 import ButtonGroup from "../ButtonGroup";
 import Checkbox from "../Checkbox";
 import IdInput from "../IdInput";
-import { OrdInfo, PunkInfo } from "./type";
 import {
   getFullPunkId,
   getPunkImageSrc,
+  getPunkList,
   imageLazyLoading,
   isValidPunkId,
 } from "@/utils";
+import { PunkInfo } from "@/types";
 import {
   LINK_HREF,
   PER_PAGE,
@@ -22,34 +23,35 @@ const Home = () => {
   const [sortType, setSortType] = useState(SORT_TYPE.RANDOM);
   const [alwaysShowIds, setAlwaysShowIds] = useState(false);
   const [draftPunkId, setDraftPunkId] = useState("");
-  const [punkId, setPunkId] = useState("");
-
-  const [minted, setMinted] = useState<undefined | number>(undefined);
+  const [filteredPunkId, setFilteredPunkId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [punkList, setPunkList] = useState<Array<PunkInfo>>([]);
-  const [count, setCount] = useState(0);
+  const [totalPunkList, setTotalPunkList] = useState<Array<PunkInfo>>([]);
+  const [mintedCount, setMintedCount] = useState<undefined | number>(undefined);
+  const [shownCount, setShownCount] = useState(0);
 
-  const punkListToBeShown = useMemo(() => {
-    if (punkId !== "") {
-      return punkList.filter((punk) => punk.id === parseInt(punkId));
+  const shownPunkList = useMemo(() => {
+    if (filteredPunkId !== "") {
+      return totalPunkList.filter(
+        (punk) => punk.id === parseInt(filteredPunkId)
+      );
     }
 
     if (sortType === SORT_TYPE.RANDOM) {
-      return [...punkList]
+      return [...totalPunkList]
         .sort(() => (Math.random() > 0.5 ? 1 : -1))
-        .filter((punk, idx) => idx < count - 1);
+        .filter((punk, idx) => idx < shownCount - 1);
     } else if (sortType === SORT_TYPE.PUNK_ID) {
-      return punkList.filter((punk) => punk.id < count - 1);
+      return totalPunkList.filter((punk) => punk.id < shownCount - 1);
     } else {
-      // FIXME: Recent Minted
-      return punkList.filter((punk) => punk.id < count - 1);
+      // TODO: Recent minted punk info
+      return totalPunkList.filter((punk) => punk.id < shownCount - 1);
     }
-  }, [punkId, punkList, count, sortType]);
+  }, [filteredPunkId, totalPunkList, shownCount, sortType]);
 
   const hasMore = useMemo(() => {
-    if (punkList.length === 0) return false;
-    return count < punkList.length;
-  }, [punkList, count]);
+    if (totalPunkList.length === 0) return false;
+    return shownCount < totalPunkList.length;
+  }, [totalPunkList, shownCount]);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -57,28 +59,12 @@ const Home = () => {
     const initData = async () => {
       setIsLoading(true);
       try {
-        const result = await new Promise<{
-          punkList: Array<PunkInfo>;
-          minted: number;
-        }>((resolve) => {
-          // FIXME:
-          setTimeout(() => {
-            resolve({
-              punkList: new Array(TOTAL_SUPPLY).fill(null).map((v, idx) => {
-                return {
-                  id: idx,
-                  ords: [] as Array<OrdInfo>,
-                };
-              }),
-              minted: 200,
-            });
-          }, 3000);
-        });
+        const result = await getPunkList();
 
         if (isSubscribed) {
-          setMinted(result.minted);
-          setPunkList(result.punkList);
-          setCount(PER_PAGE);
+          setMintedCount(result.minted);
+          setTotalPunkList(result.punkList);
+          setShownCount(PER_PAGE);
           setIsLoading(false);
         }
       } catch (e) {
@@ -100,9 +86,9 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log(punkListToBeShown);
+    console.log(shownPunkList);
     imageLazyLoading();
-  }, [punkListToBeShown]);
+  }, [shownPunkList]);
 
   return (
     <main className="box-border flex flex-1 flex-col items-center p-3 md:p-10">
@@ -155,11 +141,11 @@ const Home = () => {
               className={classNames([
                 "mr-3 text-[16px] font-medium",
                 {
-                  "text-[#f7931a]": minted === TOTAL_SUPPLY,
+                  "text-[#f7931a]": mintedCount === TOTAL_SUPPLY,
                 },
               ])}
             >
-              {minted === undefined ? "..." : minted}
+              {mintedCount === undefined ? "..." : mintedCount}
               {` / ${TOTAL_SUPPLY} minted!`}
             </h3>
             {/* Verify Button */}
@@ -305,7 +291,7 @@ const Home = () => {
             <button
               onClick={() => {
                 if (draftPunkId !== "") {
-                  setPunkId(
+                  setFilteredPunkId(
                     isValidPunkId(draftPunkId)
                       ? draftPunkId
                       : TOTAL_SUPPLY - 1 + ""
@@ -338,7 +324,7 @@ const Home = () => {
       {/* List */}
       <div className="mt-6 w-full max-w-7xl">
         <div className="flex w-full flex-row flex-wrap items-center justify-center">
-          {punkListToBeShown.map(({ id }) => {
+          {shownPunkList.map(({ id }) => {
             return (
               <div
                 className="lazy-image-container group relative h-24 w-24 bg-[#F7931A]"
@@ -377,15 +363,17 @@ const Home = () => {
         className={classNames([
           "mt-6",
           {
-            hidden: !hasMore || punkId !== "",
+            hidden: !hasMore || filteredPunkId !== "",
           },
         ])}
       >
         <button
           onClick={() => {
-            const nextShowPunks = count + PER_PAGE;
-            setCount(
-              nextShowPunks > punkList.length ? punkList.length : nextShowPunks
+            const nextShowPunks = shownCount + PER_PAGE;
+            setShownCount(
+              nextShowPunks > totalPunkList.length
+                ? totalPunkList.length
+                : nextShowPunks
             );
           }}
           className="h-[34px] rounded bg-white/[.08] px-[14px] text-sm text-[#f7931a] hover:cursor-pointer hover:bg-white/[.18]"
@@ -399,13 +387,13 @@ const Home = () => {
         className={classNames([
           "mt-6",
           {
-            hidden: punkId === "",
+            hidden: filteredPunkId === "",
           },
         ])}
       >
         <button
           onClick={() => {
-            setPunkId("");
+            setFilteredPunkId("");
           }}
           className="h-7 rounded bg-[#f7931a] px-2 text-sm text-black hover:cursor-pointer hover:bg-[#f7931a]/[.9]"
         >
