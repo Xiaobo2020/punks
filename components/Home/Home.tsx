@@ -1,70 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
+import { useEffect, useMemo, useState } from "react";
 import ButtonGroup from "../ButtonGroup";
 import Checkbox from "../Checkbox";
 import IdInput from "../IdInput";
-import imageLazyLoading from "@/utils";
-
-const SRC = {
-  DISCORD: "https://discord.gg/RzvY6UyEes",
-  TWITTER: "https://twitter.com/Bitcoin_Punks_",
-  PUBLIC_DATA_SOURCE: "",
-  ETH_CRYPTO_PUNKS: "",
-  ORDINALS: "",
-};
-
-const SORT_TYPE = {
-  RANDOM: 0,
-  PUNK_ID: 1,
-  RECENT_MINT: 2,
-};
-const OPTIONS = [
-  {
-    label: "Random",
-    value: SORT_TYPE.RANDOM,
-  },
-  {
-    label: "Punk ID",
-    value: SORT_TYPE.PUNK_ID,
-  },
-  {
-    label: "Recent Mint",
-    value: SORT_TYPE.RECENT_MINT,
-  },
-];
-
-const convertToString = (punkId: number) => {
-  const str = "" + punkId;
-  const PAD = "0000";
-  const ans = PAD.substring(0, PAD.length - str.length) + str;
-  return ans;
-};
-
-const getPunkImage = (punkId: number) => {
-  return `https://cryptopunks.app/cryptopunks/cryptopunk${convertToString(
-    punkId
-  )}.png?size=2500&customColor=F7931A`;
-};
-
-// FIXME:
-type OrdInfo = string;
-type PunkInfo = {
-  id: number;
-  ords: Array<OrdInfo>;
-};
-
-const TOTAL = 10000;
-const PER_PAGE = 20;
-
-const isValidPunkId = (punkId: string) => {
-  // empty
-  if (punkId === "") return true;
-  // number
-  if (/^\d+$/.test(punkId) === false) return false;
-  // valid number
-  const n = parseInt(punkId);
-  return 0 <= n && n < TOTAL;
-};
+import { OrdInfo, PunkInfo } from "./type";
+import {
+  getFullPunkId,
+  getPunkImageSrc,
+  imageLazyLoading,
+  isValidPunkId,
+} from "@/utils";
+import {
+  LINK_HREF,
+  PER_PAGE,
+  SORT_OPTIONS,
+  SORT_TYPE,
+  TOTAL_SUPPLY,
+} from "@/constants";
 
 const Home = () => {
   const [sortType, setSortType] = useState(SORT_TYPE.RANDOM);
@@ -112,7 +64,7 @@ const Home = () => {
           // FIXME:
           setTimeout(() => {
             resolve({
-              punkList: new Array(TOTAL).fill(null).map((v, idx) => {
+              punkList: new Array(TOTAL_SUPPLY).fill(null).map((v, idx) => {
                 return {
                   id: idx,
                   ords: [] as Array<OrdInfo>,
@@ -171,7 +123,7 @@ const Home = () => {
             <div className="ml-2 inline-block">
               <a
                 className="inline-block h-full w-10 text-center leading-[44px]"
-                href={SRC.DISCORD}
+                href={LINK_HREF.DISCORD}
               >
                 <img
                   className="inline-block h-6 w-6"
@@ -181,7 +133,7 @@ const Home = () => {
               </a>
               <a
                 className="inline-block h-full w-10 text-center leading-[44px]"
-                href={SRC.TWITTER}
+                href={LINK_HREF.TWITTER}
               >
                 <img
                   className="inline-block h-6 w-6"
@@ -203,12 +155,12 @@ const Home = () => {
               className={classNames([
                 "mr-3 text-[16px] font-medium",
                 {
-                  "text-[#f7931a]": minted === TOTAL,
+                  "text-[#f7931a]": minted === TOTAL_SUPPLY,
                 },
               ])}
             >
               {minted === undefined ? "..." : minted}
-              {` / ${TOTAL} minted!`}
+              {` / ${TOTAL_SUPPLY} minted!`}
             </h3>
             {/* Verify Button */}
             <div>
@@ -224,14 +176,14 @@ const Home = () => {
       <p className="max-w-[600px] text-center text-sm">
         Bitcoin Punks are the first byte-perfect uploads of the{" "}
         <a
-          href={SRC.ETH_CRYPTO_PUNKS}
+          href={LINK_HREF.ETH_CRYPTO_PUNKS}
           className="inline text-[#f7931a] hover:cursor-pointer hover:underline"
         >
           original Ethereum CryptoPunks
         </a>{" "}
         onto the Bitcoin Blockchain using{" "}
         <a
-          href={SRC.ORDINALS}
+          href={LINK_HREF.ORDINALS}
           className="inline text-[#f7931a] hover:cursor-pointer hover:underline"
         >
           Ordinals
@@ -278,7 +230,7 @@ const Home = () => {
           We are now kicking off a community review of the inscription set for
           the collection. Everybody is encouraged to inspect{" "}
           <a
-            href={SRC.PUBLIC_DATA_SOURCE}
+            href={LINK_HREF.PUBLIC_DATA_SOURCE}
             className="inline font-medium hover:cursor-pointer hover:underline"
           >
             the public data source
@@ -289,7 +241,7 @@ const Home = () => {
           <br />
           Please report any discrepancies via{" "}
           <a
-            href={SRC.DISCORD}
+            href={LINK_HREF.DISCORD}
             className="inline text-[#f7931a] hover:cursor-pointer hover:underline"
           >
             Discord
@@ -317,7 +269,7 @@ const Home = () => {
         <div className="mt-5 flex w-[340px] flex-row flex-nowrap items-center justify-between lg:w-[355px]">
           <div>Sort by: </div>
           <ButtonGroup
-            options={OPTIONS}
+            options={SORT_OPTIONS}
             value={sortType}
             onChange={(v) => {
               setSortType(v);
@@ -354,7 +306,9 @@ const Home = () => {
               onClick={() => {
                 if (draftPunkId !== "") {
                   setPunkId(
-                    isValidPunkId(draftPunkId) ? draftPunkId : TOTAL - 1 + ""
+                    isValidPunkId(draftPunkId)
+                      ? draftPunkId
+                      : TOTAL_SUPPLY - 1 + ""
                   );
                   setDraftPunkId("");
                 }
@@ -388,8 +342,8 @@ const Home = () => {
             return (
               <div
                 className="lazy-image-container group relative h-24 w-24 bg-[#F7931A]"
-                data-src={getPunkImage(id)}
-                key={convertToString(id)}
+                data-src={getPunkImageSrc(id)}
+                key={getFullPunkId(id)}
               >
                 {/* Lazy Load Image */}
                 <div
@@ -399,14 +353,14 @@ const Home = () => {
                       "!visible": alwaysShowIds,
                     },
                   ])}
-                >{`#${convertToString(id)}`}</div>
+                >{`#${getFullPunkId(id)}`}</div>
                 <div className="invisible absolute bottom-0 left-0 flex h-4 w-24 flex-row flex-nowrap bg-black/[.5] group-hover:!visible">
                   <button className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline">
                     ORDS
                   </button>
                   <a
                     className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline"
-                    href={getPunkImage(id)}
+                    href={getPunkImageSrc(id)}
                     target="_blank"
                   >
                     FPF
