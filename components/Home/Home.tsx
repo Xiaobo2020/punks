@@ -119,7 +119,8 @@ const Home = () => {
       ],
     });
     setTimeout(() => {
-      window.ords_modal.showModal();
+      // @ts-ignore
+      window && window.ords_modal && window.ords_modal.showModal();
     }, 0);
   }, []);
 
