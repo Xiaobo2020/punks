@@ -1,9 +1,11 @@
+// TODO: links
 export const LINK_HREF = {
   DISCORD: "https://discord.gg/RzvY6UyEes",
   TWITTER: "https://twitter.com/Bitcoin_Punks_",
-  PUBLIC_DATA_SOURCE: "",
-  ETH_CRYPTO_PUNKS: "",
-  ORDINALS: "",
+  PUBLIC_DATA_SOURCE: "https://bing.com",
+  ETH_CRYPTO_PUNKS: "https://bing.com",
+  ORDINALS: "https://bing.com",
+  REPORT_INACCURACY: "https://bing.com",
 };
 
 export const SORT_TYPE = {

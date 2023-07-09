@@ -21,6 +21,10 @@ body {
   display: flex;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 @layer components {
   .btn{
     text-transform: none;

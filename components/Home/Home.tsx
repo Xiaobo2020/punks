@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ButtonGroup from "../ButtonGroup";
 import Checkbox from "../Checkbox";
 import IdInput from "../IdInput";
@@ -28,6 +28,9 @@ const Home = () => {
   const [totalPunkList, setTotalPunkList] = useState<Array<PunkInfo>>([]);
   const [mintedCount, setMintedCount] = useState<undefined | number>(undefined);
   const [shownCount, setShownCount] = useState(0);
+  const [selectedPunk, setSelectedPunk] = useState<undefined | PunkInfo>(
+    undefined
+  );
 
   const shownPunkList = useMemo(() => {
     if (sortType === SORT_TYPE.RANDOM) {
@@ -86,6 +89,13 @@ const Home = () => {
     return () => {
       isSubscribed = false;
     };
+  }, []);
+
+  const showORDS = useCallback((item: PunkInfo) => {
+    setSelectedPunk(item);
+    setTimeout(() => {
+      window.ords_modal.showModal();
+    }, 0);
   }, []);
 
   useEffect(() => {
@@ -346,7 +356,8 @@ const Home = () => {
       <div className="mt-6 w-full max-w-7xl">
         <div className="flex w-full flex-row flex-wrap items-center justify-center">
           {(filteredPunkId !== "" ? filteredPunkList : shownPunkList).map(
-            ({ id }) => {
+            (item) => {
+              const { id } = item;
               return (
                 <div
                   className="lazy-image-container group relative h-24 w-24 bg-[#F7931A]"
@@ -363,7 +374,10 @@ const Home = () => {
                     ])}
                   >{`#${getFullPunkId(id)}`}</div>
                   <div className="invisible absolute bottom-0 left-0 flex h-4 w-24 flex-row flex-nowrap bg-black/[.5] group-hover:!visible">
-                    <button className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline">
+                    <button
+                      onClick={() => showORDS(item)}
+                      className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline"
+                    >
                       ORDS
                     </button>
                     <a
@@ -423,6 +437,34 @@ const Home = () => {
           Clear Filter
         </button>
       </div>
+      {/* Open the modal using ID.showModal() method */}
+      <dialog id="ords_modal" className="modal">
+        <form
+          method="dialog"
+          className="modal-box w-full max-w-[600px] rounded bg-[#2c2c32] !p-0"
+        >
+          {/* header */}
+          <div className="flex w-full flex-row px-10 py-7">
+            <div className="mr-auto text-lg font-medium text-white/[.9]">
+              {`#${selectedPunk ? getFullPunkId(selectedPunk.id) : "----"}`}
+            </div>
+            <a
+              href={LINK_HREF.REPORT_INACCURACY}
+              target="_blank"
+              className="mr-5 h-8 rounded bg-[#e88080]/[.9] px-4 text-sm font-normal leading-8 hover:bg-[#e88080]"
+            >
+              Report Inaccuracy
+            </a>
+            <button className="box-content rounded border-[1px] border-white/[.24] px-3 text-sm font-normal text-white hover:border-[#f7931a] hover:text-[#f7931a]">
+              Close
+            </button>
+          </div>
+          {/* content */}
+        </form>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </main>
   );
 };
