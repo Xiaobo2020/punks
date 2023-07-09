@@ -7,7 +7,6 @@ import {
   getFullPunkId,
   getPunkImageSrc,
   getPunkList,
-  imageLazyLoading,
   isValidPunkId,
 } from "@/utils";
 import { PunkInfo } from "@/types";
@@ -32,18 +31,18 @@ const Home = () => {
     undefined
   );
 
-  const shownPunkList = useMemo(() => {
-    if (sortType === SORT_TYPE.RANDOM) {
-      return [...totalPunkList]
-        .sort(() => (Math.random() > 0.5 ? 1 : -1))
-        .filter((punk, idx) => idx < shownCount - 1);
-    } else if (sortType === SORT_TYPE.PUNK_ID) {
-      return totalPunkList.filter((punk) => punk.id < shownCount - 1);
-    } else {
-      // TODO: Recent minted punk info
-      return totalPunkList.filter((punk) => punk.id < shownCount - 1);
-    }
-  }, [totalPunkList, shownCount, sortType]);
+  const randomPunkList = useMemo(() => {
+    return [...totalPunkList].sort(() => (Math.random() > 0.5 ? 1 : -1));
+  }, [totalPunkList]);
+
+  const sortedPunkList = useMemo(() => {
+    return [...totalPunkList];
+  }, [totalPunkList]);
+
+  const recentMintedPunkList = useMemo(() => {
+    // TODO: recent mint
+    return [...totalPunkList];
+  }, [totalPunkList]);
 
   const filteredPunkList = useMemo(() => {
     if (filteredPunkId !== "") {
@@ -123,18 +122,6 @@ const Home = () => {
       window && window.ords_modal && window.ords_modal.showModal();
     }, 0);
   }, []);
-
-  useEffect(() => {
-    if (filteredPunkList.length > 0 && filteredPunkId !== "") {
-      imageLazyLoading();
-    }
-  }, [filteredPunkId, filteredPunkList]);
-
-  useEffect(() => {
-    if (filteredPunkId === "") {
-      imageLazyLoading();
-    }
-  }, [sortType, filteredPunkId, shownPunkList]);
 
   return (
     <main className="box-border flex flex-1 flex-col items-center p-3 md:p-10">
@@ -381,8 +368,16 @@ const Home = () => {
       {/* List */}
       <div className="mt-6 w-full max-w-7xl">
         <div className="flex w-full flex-row flex-wrap items-center justify-center">
-          {(filteredPunkId !== "" ? filteredPunkList : shownPunkList).map(
-            (item) => {
+          {(filteredPunkId !== ""
+            ? filteredPunkList
+            : sortType === SORT_TYPE.RANDOM
+            ? randomPunkList
+            : sortType === SORT_TYPE.PUNK_ID
+            ? sortedPunkList
+            : recentMintedPunkList
+          )
+            .filter((punk, idx) => idx < shownCount - 1)
+            .map((item) => {
               const { id } = item;
               return (
                 <div
@@ -416,8 +411,7 @@ const Home = () => {
                   </div>
                 </div>
               );
-            }
-          )}
+            })}
         </div>
       </div>
 
