@@ -30,12 +30,6 @@ const Home = () => {
   const [shownCount, setShownCount] = useState(0);
 
   const shownPunkList = useMemo(() => {
-    if (filteredPunkId !== "") {
-      return totalPunkList.filter(
-        (punk) => punk.id === parseInt(filteredPunkId)
-      );
-    }
-
     if (sortType === SORT_TYPE.RANDOM) {
       return [...totalPunkList]
         .sort(() => (Math.random() > 0.5 ? 1 : -1))
@@ -46,7 +40,16 @@ const Home = () => {
       // TODO: Recent minted punk info
       return totalPunkList.filter((punk) => punk.id < shownCount - 1);
     }
-  }, [filteredPunkId, totalPunkList, shownCount, sortType]);
+  }, [totalPunkList, shownCount, sortType]);
+
+  const filteredPunkList = useMemo(() => {
+    if (filteredPunkId !== "") {
+      return totalPunkList.filter(
+        (punk) => punk.id === parseInt(filteredPunkId)
+      );
+    }
+    return [];
+  }, [filteredPunkId, totalPunkList]);
 
   const hasMore = useMemo(() => {
     if (totalPunkList.length === 0) return false;
@@ -86,9 +89,16 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log(shownPunkList);
-    imageLazyLoading();
-  }, [shownPunkList]);
+    if (filteredPunkList.length > 0 && filteredPunkId !== "") {
+      imageLazyLoading();
+    }
+  }, [filteredPunkId, filteredPunkList]);
+
+  useEffect(() => {
+    if (filteredPunkId === "") {
+      imageLazyLoading();
+    }
+  }, [sortType, filteredPunkId, shownPunkList]);
 
   return (
     <main className="box-border flex flex-1 flex-col items-center p-3 md:p-10">
@@ -264,7 +274,14 @@ const Home = () => {
         </div>
 
         {/* Search */}
-        <div className="mt-5 flex w-[375px] flex-row flex-nowrap justify-between lg:w-[355px]">
+        <div
+          className={classNames([
+            "mt-5 flex w-[375px] flex-row flex-nowrap justify-between lg:w-[355px]",
+            {
+              hidden: filteredPunkId !== "",
+            },
+          ])}
+        >
           <div
             className="flex w-[140px] flex-row flex-nowrap items-center hover:cursor-pointer"
             onClick={() => {
@@ -291,12 +308,16 @@ const Home = () => {
             <button
               onClick={() => {
                 if (draftPunkId !== "") {
-                  setFilteredPunkId(
-                    isValidPunkId(draftPunkId)
-                      ? draftPunkId
-                      : TOTAL_SUPPLY - 1 + ""
-                  );
-                  setDraftPunkId("");
+                  const isValid = isValidPunkId(draftPunkId);
+                  if (isValid) {
+                    setFilteredPunkId(draftPunkId);
+                  } else {
+                    const nextDraftPunkId = TOTAL_SUPPLY - 1 + "";
+                    setDraftPunkId(nextDraftPunkId);
+                    setTimeout(() => {
+                      setFilteredPunkId(nextDraftPunkId);
+                    }, 0);
+                  }
                 }
               }}
               className="box-content h-7 w-7 rounded-sm bg-[#70c0e8]/[.16] px-2 text-[#70c0e8] hover:bg-[#70c0e8]/[.2]"
@@ -324,37 +345,39 @@ const Home = () => {
       {/* List */}
       <div className="mt-6 w-full max-w-7xl">
         <div className="flex w-full flex-row flex-wrap items-center justify-center">
-          {shownPunkList.map(({ id }) => {
-            return (
-              <div
-                className="lazy-image-container group relative h-24 w-24 bg-[#F7931A]"
-                data-src={getPunkImageSrc(id)}
-                key={getFullPunkId(id)}
-              >
-                {/* Lazy Load Image */}
+          {(filteredPunkId !== "" ? filteredPunkList : shownPunkList).map(
+            ({ id }) => {
+              return (
                 <div
-                  className={classNames([
-                    "invisible absolute left-0 top-0 h-4 w-24 bg-black/[.5] text-center text-xs font-normal text-white group-hover:!visible",
-                    {
-                      "!visible": alwaysShowIds,
-                    },
-                  ])}
-                >{`#${getFullPunkId(id)}`}</div>
-                <div className="invisible absolute bottom-0 left-0 flex h-4 w-24 flex-row flex-nowrap bg-black/[.5] group-hover:!visible">
-                  <button className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline">
-                    ORDS
-                  </button>
-                  <a
-                    className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline"
-                    href={getPunkImageSrc(id)}
-                    target="_blank"
-                  >
-                    FPF
-                  </a>
+                  className="lazy-image-container group relative h-24 w-24 bg-[#F7931A]"
+                  data-src={getPunkImageSrc(id)}
+                  key={getFullPunkId(id)}
+                >
+                  {/* Lazy Load Image */}
+                  <div
+                    className={classNames([
+                      "invisible absolute left-0 top-0 h-4 w-24 bg-black/[.5] text-center text-xs font-normal text-white group-hover:!visible",
+                      {
+                        "!visible": alwaysShowIds,
+                      },
+                    ])}
+                  >{`#${getFullPunkId(id)}`}</div>
+                  <div className="invisible absolute bottom-0 left-0 flex h-4 w-24 flex-row flex-nowrap bg-black/[.5] group-hover:!visible">
+                    <button className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline">
+                      ORDS
+                    </button>
+                    <a
+                      className="w-1/2 text-center text-xs font-normal text-[#f7931a] hover:underline"
+                      href={getPunkImageSrc(id)}
+                      target="_blank"
+                    >
+                      FPF
+                    </a>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            }
+          )}
         </div>
       </div>
 
