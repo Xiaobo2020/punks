@@ -92,7 +92,32 @@ const Home = () => {
   }, []);
 
   const showORDS = useCallback((item: PunkInfo) => {
-    setSelectedPunk(item);
+    setSelectedPunk({
+      ...item,
+      // TODO: ords
+      ords: [
+        {
+          minted: true,
+          inscription: "34399",
+        },
+        {
+          minted: false,
+          inscription: "34415",
+        },
+        {
+          minted: false,
+          inscription: "34543",
+        },
+        {
+          minted: false,
+          inscription: "36620",
+        },
+        {
+          minted: false,
+          inscription: "37672",
+        },
+      ],
+    });
     setTimeout(() => {
       window.ords_modal.showModal();
     }, 0);
@@ -460,6 +485,125 @@ const Home = () => {
             </button>
           </div>
           {/* content */}
+          <div className="w-full px-10 pb-7">
+            <div className="flex w-full flex-row flex-wrap justify-between">
+              <img
+                src={selectedPunk ? getPunkImageSrc(selectedPunk.id) : ""}
+                alt=""
+                width="96px"
+                height="96px"
+                className="h-24 w-24 bg-[#f7931a]"
+              />
+              <div className="max-h-[348px] min-h-[260px] w-[370px] overflow-x-auto">
+                <div>
+                  {(selectedPunk ? selectedPunk.ords : []).map((item) => {
+                    return (
+                      <div
+                        key={item.inscription}
+                        className="flex h-[84px] w-full flex-row"
+                      >
+                        {/* left */}
+                        <div className="w-[26px] flex-col">
+                          {/* circle */}
+                          <div
+                            className={classNames([
+                              "h-[14px] w-[14px] rounded-[7px] border-[2px] border-white/[.52]",
+                              {
+                                "border-[#4db8a1]": item.minted,
+                              },
+                            ])}
+                          ></div>
+                          {/* line */}
+                          <div className="mx-[6px] h-[70px] w-[2px] bg-white/[.2]"></div>
+                        </div>
+                        {/* right */}
+                        <div className="flex flex w-full flex-col text-white/[.9]">
+                          {/* title */}
+                          <h1
+                            className={classNames([
+                              "mb-2 w-full text-sm font-medium leading-[14px] text-white/[.9]",
+                              {
+                                "text-[#4db8a1]": item.minted,
+                              },
+                            ])}
+                          >
+                            {item.minted ? "Minted" : "Missed"}
+                          </h1>
+                          {/* subtitle */}
+                          <a
+                            href=""
+                            target="_blank"
+                            className={classNames([
+                              "mb-1 w-full text-sm hover:underline",
+                              {
+                                "text-[#4db8a1]": item.minted,
+                              },
+                            ])}
+                          >
+                            View inscription{" "}
+                            <span
+                              className={classNames([
+                                "text-white/[.82]",
+                                {
+                                  "text-[#4db8a1]": item.minted,
+                                },
+                              ])}
+                            >{`#${item.inscription}`}</span>
+                          </a>
+                          {/* text */}
+                          <span
+                            className={classNames([
+                              "w-full text-xs text-white/[.82]",
+                              {
+                                "text-[#4db8a1]": item.minted,
+                              },
+                            ])}
+                          >
+                            {item.minted
+                              ? "The first byte-perfect upload of this punk."
+                              : "This appeared after the original upload of this punk."}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  <div className="flex h-[34px] w-full flex-row">
+                    {/* left */}
+                    <div className="w-[26px] flex-col">
+                      {/* circle */}
+                      <div className="h-[14px] w-[14px] rounded-[7px] border-[2px] border-white/[.52]"></div>
+                      {/* line */}
+                      {/* <div className="mx-[6px] h-[70px] w-[2px] bg-white/[.2]"></div> */}
+                    </div>
+                    {/* right */}
+                    <div
+                      className={classNames([
+                        "flex flex w-full flex-col text-white/[.9]",
+                      ])}
+                    >
+                      {/* title */}
+                      {/* <h1 className="mb-2 w-full text-sm font-medium leading-[14px]"> */}
+                      {/*   Missed */}
+                      {/* </h1> */}
+                      {/* subtitle */}
+                      <a
+                        href=""
+                        target="_blank"
+                        className="mb-1 w-full text-sm leading-[14px] text-white/[.82] hover:underline"
+                      >
+                        No additional mint attempts
+                      </a>
+                      {/* text */}
+                      <span className="w-full text-xs text-white/[.82]">
+                        Recent mint attempts may take time to appear
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </form>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
