@@ -524,7 +524,7 @@ const Home = () => {
                             className={classNames([
                               "mb-2 w-full text-sm font-medium leading-[14px] text-white/[.9]",
                               {
-                                "text-[#4db8a1]": item.minted,
+                                "!text-[#4db8a1]": item.minted,
                               },
                             ])}
                           >
@@ -537,7 +537,7 @@ const Home = () => {
                             className={classNames([
                               "mb-1 w-full text-sm hover:underline",
                               {
-                                "text-[#4db8a1]": item.minted,
+                                "!text-[#4db8a1]": item.minted,
                               },
                             ])}
                           >
@@ -546,7 +546,7 @@ const Home = () => {
                               className={classNames([
                                 "text-white/[.82]",
                                 {
-                                  "text-[#4db8a1]": item.minted,
+                                  "!text-[#4db8a1]": item.minted,
                                 },
                               ])}
                             >{`#${item.inscription}`}</span>
@@ -556,7 +556,7 @@ const Home = () => {
                             className={classNames([
                               "w-full text-xs text-white/[.82]",
                               {
-                                "text-[#4db8a1]": item.minted,
+                                "!text-[#4db8a1]": item.minted,
                               },
                             ])}
                           >
